@@ -8,7 +8,7 @@ export class Session {
   @Column()
   user_id!: string;
 
-  @Column({ unique: true })
+  @Column()
   token!: string;
 
   @Column({ type: "timestamp" })

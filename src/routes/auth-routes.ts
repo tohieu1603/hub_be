@@ -1,4 +1,5 @@
 import { Router, Request, Response } from "express";
+import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { AppDataSource } from "../config/data-source";
@@ -15,7 +16,7 @@ const machineRepo = () => AppDataSource.getRepository(Machine);
 function createToken(user: User): string {
   const secret = process.env.JWT_SECRET || "mulapps-jwt-secret-2026-change-in-production";
   const expiresIn = process.env.JWT_EXPIRES_IN || "7d";
-  return jwt.sign({ id: user.id, email: user.email, role: user.role }, secret, { expiresIn } as jwt.SignOptions);
+  return jwt.sign({ id: user.id, email: user.email, role: user.role, jti: crypto.randomUUID() }, secret, { expiresIn } as jwt.SignOptions);
 }
 
 async function createSession(userId: string, token: string): Promise<void> {
