@@ -7,6 +7,7 @@ import rateLimit from "express-rate-limit";
 import { AppDataSource } from "./config/data-source";
 import authRoutes from "./routes/auth-routes";
 import machineRoutes from "./routes/machine-routes";
+import adminRoutes from "./routes/admin-routes";
 import hubProxyRoutes from "./routes/hub-proxy-routes";
 import { authMiddleware, requireAdmin } from "./middleware/auth-middleware";
 
@@ -30,6 +31,7 @@ app.use("/api/auth", authLimiter, authRoutes);
 
 // Protected routes
 app.use("/api/machines", authMiddleware, apiLimiter, requireAdmin, machineRoutes);
+app.use("/api/admin", authMiddleware, apiLimiter, requireAdmin, adminRoutes);
 app.use("/api/hub/chat", authMiddleware, chatLimiter); // Chat: 5/min (expensive)
 app.use("/api/hub", authMiddleware, apiLimiter, hubProxyRoutes);
 
