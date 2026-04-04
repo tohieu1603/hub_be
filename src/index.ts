@@ -15,7 +15,12 @@ dotenv.config({ path: path.resolve(__dirname, "../.env") });
 console.log("[ENV] HUB_API_KEY:", process.env.HUB_API_KEY ? "set (" + process.env.HUB_API_KEY.slice(0, 8) + "...)" : "NOT SET");
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: process.env.CORS_ORIGIN?.split(",") || "*",
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
 app.use(express.json());
 
 // Rate limits
