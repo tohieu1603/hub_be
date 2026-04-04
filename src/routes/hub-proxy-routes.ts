@@ -105,4 +105,7 @@ router.post("/execute", (req, res) => proxyToHub(req, res, "/api/execute", "POST
 router.post("/chat/stream", (req, res) => proxySSE(req, res, "/api/chat/stream"));
 router.post("/chat", (req, res) => proxyToHub(req, res, "/api/chat", "POST"));
 
+// Skill/App registration — register a skill app with user's Hub
+router.post("/apps/register", (req, res) => proxyToHub(req, res, "/api/apps/register", "POST"));
+
 export default router;
