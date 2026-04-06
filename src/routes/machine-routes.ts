@@ -14,13 +14,14 @@ router.get("/", async (_req: Request, res: Response): Promise<void> => {
 
 // POST / - create machine
 router.post("/", async (req: Request, res: Response): Promise<void> => {
-  const { name, hub_url, subdomain } = req.body;
+  const { name, hub_url, subdomain, hub_api_key } = req.body;
   if (!name || !hub_url) {
     res.status(400).json({ error: "name and hub_url are required" });
     return;
   }
 
-  const apiKey = `mkey_${crypto.randomBytes(24).toString("hex")}`;
+  // hub_api_key: admin nhập key từ Hub .env, mỗi Hub 1 key riêng
+  const apiKey = hub_api_key || `mkey_${crypto.randomBytes(24).toString("hex")}`;
   const machine = machineRepo().create({ name, hub_url, subdomain: subdomain || null, api_key: apiKey });
   await machineRepo().save(machine);
   res.status(201).json(machine);

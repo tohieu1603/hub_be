@@ -12,7 +12,7 @@ function getHubHeaders(req: Request, machine: Machine): Record<string, string> {
     "X-User-Name": req.user!.name,
     "X-Machine-Id": machine.id,
     "X-Machine-Name": machine.name,
-    "X-Api-Key": process.env.HUB_API_KEY || "",
+    "X-Api-Key": machine.api_key || process.env.HUB_API_KEY || "",
   };
 }
 
