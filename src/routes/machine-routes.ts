@@ -72,4 +72,16 @@ router.put("/:id/unassign", async (req: Request, res: Response): Promise<void> =
   res.json(machine);
 });
 
+// DELETE /:id - delete machine (unassign first if needed)
+router.delete("/:id", async (req: Request, res: Response): Promise<void> => {
+  const machine = await machineRepo().findOne({ where: { id: req.params.id } });
+  if (!machine) {
+    res.status(404).json({ error: "Machine not found" });
+    return;
+  }
+
+  await machineRepo().remove(machine);
+  res.json({ deleted: true, id: req.params.id });
+});
+
 export default router;
