@@ -108,4 +108,26 @@ router.post("/chat", (req, res) => proxyToHub(req, res, "/api/chat", "POST"));
 // Skill/App registration — register a skill app with user's Hub
 router.post("/apps/register", (req, res) => proxyToHub(req, res, "/api/apps/register", "POST"));
 
+// AI Experts & Research — global data, no machine required
+async function proxyToHubDirect(req: Request, res: Response, hubPath: string) {
+  const hubUrl = process.env.HUB_URL || "http://localhost:3000";
+  const apiKey = process.env.HUB_API_KEY || "";
+  try {
+    const resp = await fetch(`${hubUrl}${hubPath}`, {
+      headers: { "Content-Type": "application/json", "X-Api-Key": apiKey },
+    });
+    const text = await resp.text();
+    try { return res.status(resp.status).json(JSON.parse(text)); }
+    catch { return res.status(resp.status).json({ error: text.slice(0, 200) }); }
+  } catch (err: unknown) {
+    return res.status(502).json({ error: `Hub unreachable: ${(err as Error).message}` });
+  }
+}
+router.get("/ai-experts", (req, res) => proxyToHubDirect(req, res, "/api/ai-experts"));
+router.get("/ai-experts/posts", (req, res) => proxyToHubDirect(req, res, `/api/ai-experts/posts?limit=${req.query.limit || 100}`));
+router.get("/ai-experts/summary", (req, res) => proxyToHubDirect(req, res, "/api/ai-experts/summary"));
+router.get("/ai-experts/posts/:id", (req, res) => proxyToHubDirect(req, res, `/api/ai-experts/posts/${req.params.id}`));
+router.get("/ai-experts/papers", (req, res) => proxyToHubDirect(req, res, "/api/ai-experts/papers"));
+router.get("/ai-experts/repos", (req, res) => proxyToHubDirect(req, res, "/api/ai-experts/repos"));
+
 export default router;
