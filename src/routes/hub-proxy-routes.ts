@@ -130,4 +130,17 @@ router.get("/ai-experts/posts/:id", (req, res) => proxyToHubDirect(req, res, `/a
 router.get("/ai-experts/papers", (req, res) => proxyToHubDirect(req, res, "/api/ai-experts/papers"));
 router.get("/ai-experts/repos", (req, res) => proxyToHubDirect(req, res, "/api/ai-experts/repos"));
 
+// Drafts — preview/edit/apply workflow
+router.get("/drafts", (req, res) => {
+  const qs = new URLSearchParams(req.query as any).toString();
+  return proxyToHub(req, res, `/api/drafts${qs ? "?" + qs : ""}`);
+});
+router.post("/drafts", (req, res) => proxyToHub(req, res, "/api/drafts", "POST"));
+router.get("/drafts/:id", (req, res) => proxyToHub(req, res, `/api/drafts/${req.params.id}`));
+router.put("/drafts/:id", (req, res) => proxyToHub(req, res, `/api/drafts/${req.params.id}`, "PUT"));
+router.delete("/drafts/:id", (req, res) => proxyToHub(req, res, `/api/drafts/${req.params.id}`, "DELETE"));
+router.post("/drafts/:id/apply", (req, res) => proxyToHub(req, res, `/api/drafts/${req.params.id}/apply`, "POST"));
+router.post("/drafts/:id/render-cover", (req, res) => proxyToHub(req, res, `/api/drafts/${req.params.id}/render-cover`, "POST"));
+router.get("/drafts/:id/status", (req, res) => proxyToHub(req, res, `/api/drafts/${req.params.id}/status`));
+
 export default router;
